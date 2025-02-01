@@ -1,0 +1,18 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:80"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_PASSWORD=verySecurePassword
+    restart: always
+
+  redis:
+    image: bitnami/redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+    environment:
+      - REDIS_PASSWORD=verySecurePassword
