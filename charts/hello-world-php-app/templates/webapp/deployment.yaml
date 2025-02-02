@@ -28,8 +28,6 @@ spec:
             matchLabels:
               {{- include "webapp.selectorLabels" . | nindent 14 }}
       serviceAccountName: {{ include "webapp.fullname" . }}
-      securityContext:
-        {{- toYaml .Values.webapp.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
