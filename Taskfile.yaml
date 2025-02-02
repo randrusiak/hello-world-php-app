@@ -1,0 +1,59 @@
+version: "3"
+
+tasks:
+  compose-up:
+    desc: "Start local test environment using docker-compose"
+    cmds:
+      - docker compose up --build -d
+
+  compose-down:
+    desc: "Destroy local test environment and remove volumes"
+    cmds:
+      - docker compose down --volumes
+
+  build-image:
+    desc: "Build hello-world-php-app image with static tag"
+    cmds: 
+      - docker build . -t hello-world-php-app:0.1.0
+  kind-setup:
+    desc: "Setup a KIND cluster with Ingress Controller"
+    deps:
+      - build-image
+    cmds:
+      - kind create cluster --config kind/kind-config.yaml --name test-cluster
+      - kind load docker-image hello-world-php-app:0.1.0 --name test-cluster
+      - kubectl apply -f kind/deploy-ingress-nginx.yaml
+      - kubectl wait --namespace ingress-nginx --for=condition=ready pod --selector=app.kubernetes.io/component=controller --timeout=90s
+
+  helm-deploy:
+    desc: "Deploy Helm chart to KIND cluster and run tests"
+    cmds:
+      - |
+        kubectl create secret generic mysql-credentials \
+        --from-literal=MYSQL_URL='mysql://database.tidio:3306/devops_task' \
+        --from-literal=MYSQL_USER='app_1' \
+        --from-literal=MYSQL_PASSWORD='password_app_1' || true
+
+      - helm install test-app charts/hello-world-php-app/
+      
+  helm-uninstall:
+    desc: "Uninstall test-app helm release"
+    cmds:
+    - helm uninstall test-app
+
+  kind-teardown:
+    desc: "Destroy the KIND cluster"
+    cmds:
+      - kind delete cluster --name test-cluster
+
+  test-curl:
+    desc: "Execute a test request verifying that the service is available through the input controller"
+    cmds:
+      - "curl -k  -H 'Host: hello-world-php-app.example.com' https://localhost/v1/greeting"
+
+  # full-flow:
+  #   desc: "Run full CI flow: setup KIND, deploy, test, teardown"
+  #   cmds:
+  #     - task: kind-setup
+  #     - task: kind-deploy
+  #     - task: kind-teardown
