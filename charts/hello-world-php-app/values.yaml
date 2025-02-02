@@ -1,0 +1,88 @@
+# Default values for hello-world-php-app.
+webapp:
+  replicaCount: 2
+  image:
+    repository: hello-world-php-app
+    pullPolicy: IfNotPresent
+    tag: "0.1.0"
+
+  serviceAccount:
+    automount: false
+    annotations: {}
+
+  extraEnvFrom:
+    - secretRef:
+        name: mysql-credentials
+
+  securityContext:
+    runAsUser: 33
+    runAsGroup: 33
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 128Mi
+
+  livenessProbe:
+    httpGet:
+      path: /healthz/live
+      port: http
+  readinessProbe:
+    httpGet:
+      path: /healthz/ready
+      port: http
+
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    # targetMemoryUtilizationPercentage: 80
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations: {}
+    hosts:
+      - host: hello-world-php-app.example.com
+        paths:
+          - path: /v1/
+            pathType: Prefix
+    tls: []
+    #  - secretName: hello-world-php-app-tls
+    #    hosts:
+    #      - hello-world-php-app.example.com
+
+redis:
+  image:
+    repository: bitnami/redis
+    pullPolicy: IfNotPresent
+    tag: "7.4.2"
+  persistence:
+    size: 1Gi
+    accessModes:
+    - ReadWriteOnce
+    # storageClassName: gp3 
+  serviceAccount:
+    automount: false
+    annotations: {}
+
+  securityContext:
+    runAsUser: 1001
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: ["ALL"]
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 128Mi
