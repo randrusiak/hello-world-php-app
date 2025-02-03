@@ -59,6 +59,26 @@ webapp:
     #    hosts:
     #      - hello-world-php-app.example.com
 
+  networkPolicy:
+    enabled: true
+    ingressRules:
+      - from:
+          - namespaceSelector: {}
+            podSelector:
+              matchLabels:
+                app.kubernetes.io/name: ingress-nginx
+        ports:
+          - protocol: TCP
+            port: 8080
+    egressRules:
+      - {}
+        #   - namespaceSelector: {}
+        #     podSelector:
+        #       matchLabels:
+        #         app.kubernetes.io/name: mysql
+        # ports:
+        #   - protocol: TCP
+        #     port: 3306
 redis:
   image:
     repository: bitnami/redis
@@ -86,3 +106,14 @@ redis:
       memory: 128Mi
     limits:
       memory: 128Mi
+
+  networkPolicy:
+    enabled: true
+    ingressRules:
+      - from:
+          - podSelector:
+              matchLabels:
+                app.kubernetes.io/name: webapp
+        ports:
+          - protocol: TCP
+            port: 6379

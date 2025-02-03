@@ -50,10 +50,3 @@ tasks:
     desc: "Execute a test request verifying that the service is available through the input controller"
     cmds:
       - "curl -k  -H 'Host: hello-world-php-app.example.com' https://localhost/v1/greeting"
-
-  # full-flow:
-  #   desc: "Run full CI flow: setup KIND, deploy, test, teardown"
-  #   cmds:
-  #     - task: kind-setup
-  #     - task: kind-deploy
-  #     - task: kind-teardown
