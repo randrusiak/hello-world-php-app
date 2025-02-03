@@ -67,7 +67,7 @@ task: Available tasks for this project:
 * helm-uninstall:       Uninstall test-app helm release
 * kind-setup:           Setup a KIND cluster with Ingress Controller
 * kind-teardown:        Destroy the KIND cluster
-* test-curl:            Execute a test request verifying that the service is available through the input controller
+* test-curl:            Execute a test request verifying that the service is available through the ingress controller
 
 ```
 

@@ -47,6 +47,6 @@ tasks:
       - kind delete cluster --name test-cluster
 
   test-curl:
-    desc: "Execute a test request verifying that the service is available through the input controller"
+    desc: "Execute a test request verifying that the service is available through the ingress controller"
     cmds:
       - "curl -k  -H 'Host: hello-world-php-app.example.com' https://localhost/v1/greeting"
