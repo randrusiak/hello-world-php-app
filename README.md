@@ -83,3 +83,4 @@ Below are some ideas for improvements and potential enhancements:
 - **Enhance HPA with external metrics** – Instead of relying solely on CPU utilization, consider using external metrics (e.g., request rate, response time).
 - **Secure MySQL credentials** – Instead of using environment variables, the application should retrieve credentials from a mounted file (e.g., Kubernetes Secret volume).
 - **Restrict WebApp Egress Traffic** – Instead of allowing unrestricted egress, WebApp should only be permitted to communicate with Redis and MySQL endpoints.
+- **Add documentation to the Helm Chart** – Improve usability by including a `README.md` inside the Helm Chart with instructions on values, deployment options, and customization.
